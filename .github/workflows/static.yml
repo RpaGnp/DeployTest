@@ -14,6 +14,8 @@ jobs:
 
       - name: Deploy using custom script
         run: |
-          # No need to clone the repository, it's already available
-          # deploy.sh
-          scp index.html ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/github/actions-runner/deploy/index.html
+          # Descargar el archivo HTML desde el repositorio
+          git clone https://github.com/${{ github.repository }}.git
+
+          # Ejecutar el script de implementación personalizado
+          ./deploy.sh ${{ secrets.SERVER_USER }} ${{ secrets.SERVER_HOST }} index.html
