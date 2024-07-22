@@ -15,7 +15,7 @@ jobs:
       - name: Deploy using custom script
         run: |
           # Descargar el archivo HTML desde el repositorio
-          git pull https://github.com/${{ github.repository }}.git
+          git clone https://github.com/${{ github.repository }}.git
 
           # Ejecutar el script de implementación personalizado
           ./deploy.sh ${{ secrets.SERVER_USER }} ${{ secrets.SERVER_HOST }} index.html
