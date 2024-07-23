@@ -36,6 +36,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /home/github/actions-runner/deploy/DeployTest
+            cd /home/github/actions-runner/deploy
             git pull origin main
 
