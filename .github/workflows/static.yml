@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /home/github/actions-runner/deploy/DeployTest
+            cd /home/github/actions-runner/deploy
             git pull origin main
             mv DeployTest/* .  # Mueve el contenido de DeployTest a la raíz actual
             rmdir DeployTest  # Elimina la carpeta DeployTest si ya no es necesaria
