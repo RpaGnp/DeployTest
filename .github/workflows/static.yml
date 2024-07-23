@@ -31,3 +31,7 @@ jobs:
         script: |
           cd /home/github/actions-runner/deploy/DeployTest
           git pull origin main
+          
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh-XXXXXXe3XggS/agent.6788
+        SSH_AGENT_PID: 6789          
