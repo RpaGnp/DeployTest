@@ -45,6 +45,7 @@ jobs:
             which rmdir
             echo "** ejecutar comnados **"
             cd /home/github/actions-runner/deploy/DeployTest
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
           EOF
 
