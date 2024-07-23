@@ -15,7 +15,8 @@ jobs:
 
       - name: Imprimir clave SSH (solo para depuración)
         run: |
-          echo '{{ secrets.SSH_PRIVATE_KEY }}'
+          echo "{{ secrets.SSH_PRIVATE_KEY }}" | head -n 2
+          echo "{{ secrets.SSH_PRIVATE_KEY }}" | tail -n 2
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
@@ -23,11 +24,13 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Test SSH connection (optional)
+        id: test_ssh
         run: |
           echo "** Testing SSH connection... **"
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo Connection successful" && echo "** SSH connection successful! **" || echo "** SSH connection failed! Check credentials and key setup. **"
 
       - name: Desplegar archivos (solo si la prueba SSH tiene éxito)
+        if: steps.test_ssh.outcome == 'success'
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -37,6 +40,9 @@ jobs:
           script: |
             cd /home/github/actions-runner/deploy/DeployTest
             git pull origin main
-            mv DeployTest/* .
-            rmdir DeployTest
+            mv DeployTest/* .  # Mueve el contenido de DeployTest a la raíz actual
+            rmdir DeployTest  # Elimina la carpeta DeployTest si ya no es necesaria
 
+      - name: Verificar archivos desplegados
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "ls -la /home/github/actions-runner/deploy/DeployTest"
