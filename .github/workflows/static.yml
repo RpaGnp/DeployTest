@@ -38,5 +38,6 @@ jobs:
           script: |
             cd /home/github/actions-runner/deploy/DeployTest
             git pull origin main
-            cp -r DeployTest/* .  # Copiar todos los archivos desde la carpeta DeployTest anidada al directorio actual
+            mv DeployTest/* .
+            rmdir DeployTest
 
