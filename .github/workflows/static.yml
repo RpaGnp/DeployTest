@@ -13,20 +13,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Print environment variables
-      run: |
-        echo "SERVER_HOST=${{ secrets.SERVER_HOST }}"
-        echo "SERVER_USER=${{ secrets.SERVER_USER }}"
-        echo "SSH_PRIVATE_KEY=${{ secrets.SSH_PRIVATE_KEY }}" # Consider masking this for security
-
     - name: Set up SSH agent
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Test SSH Connection
+    - name: Print environment variables
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo 'SSH connection successful!'"
+        echo "Host: ${{ secrets.SERVER_HOST }}"
+        echo "Username: ${{ secrets.SERVER_USER }}"
+        echo "Key: ${{ secrets.SSH_PRIVATE_KEY }}"
 
     - name: Deploy files
       uses: appleboy/ssh-action@v0.1.4
