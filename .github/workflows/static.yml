@@ -15,34 +15,36 @@ jobs:
 
       - name: Imprimir clave SSH (solo para depuración)
         run: |
-          echo "{{ secrets.SSH_PRIVATE_KEY }}" | head -n 2
-          echo "{{ secrets.SSH_PRIVATE_KEY }}" | tail -n 2
+          echo 'Clave SSH (solo para depuración):'
+          echo '${{ secrets.SSH_PRIVATE_KEY }}' | head -n 2
+          echo '${{ secrets.SSH_PRIVATE_KEY }}' | tail -n 2
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Test SSH connection (optional)
+      - name: Test SSH connection
         id: test_ssh
         run: |
           echo "** Testing SSH connection... **"
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo Connection successful" && echo "** SSH connection successful! **" || echo "** SSH connection failed! Check credentials and key setup. **"
 
-      - name: Desplegar archivos (solo si la prueba SSH tiene éxito)
+      - name: Verificar permisos y existencia de directorios (solo para depuración)
         if: steps.test_ssh.outcome == 'success'
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /home/github/actions-runner/deploy
-            git pull origin main
-            mv DeployTest/* .  # Mueve el contenido de DeployTest a la raíz actual
-            rmdir DeployTest  # Elimina la carpeta DeployTest si ya no es necesaria
-
-      - name: Verificar archivos desplegados
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "ls -la /home/github/actions-runner/deploy/DeployTest"
+          echo "** Verificando permisos y existencia de directorios... **"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            echo "** Directorio actual **"
+            pwd
+            echo "** Listar directorios y permisos **"
+            ls -la /home/github/actions-runner/deploy
+            echo "** Verificar permisos de los comandos **"
+            which git
+            which mv
+            which rmdir
+            echo "** ejecutar comnados **"
+            cd /home/github/actions-runner/deploy/DeployTest
+            git pull origin main
+          EOF
+
