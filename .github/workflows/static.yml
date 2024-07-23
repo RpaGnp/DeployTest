@@ -1,9 +1,9 @@
-name: Deploy
+name: Deploy to Server
 
 on:
   push:
     branches:
-      - main
+      - main  # O el nombre de la rama que desees desplegar
 
 jobs:
   deploy:
@@ -13,13 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup SSH
+    - name: Set up SSH agent
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Test SSH connection
-      run: ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo Connection successful"
 
     - name: Deploy files
       uses: appleboy/ssh-action@v0.1.4
@@ -31,7 +28,3 @@ jobs:
         script: |
           cd /home/github/actions-runner/deploy/DeployTest
           git pull origin main
-          
-      env:
-        SSH_AUTH_SOCK: /tmp/ssh-XXXXXXe3XggS/agent.6788
-        SSH_AGENT_PID: 6789          
