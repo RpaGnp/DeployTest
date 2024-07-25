@@ -30,7 +30,7 @@ jobs:
           echo "** Testing SSH connection... **"
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "echo Connection successful" && echo "** SSH connection successful! **" || echo "** SSH connection failed! Check credentials and key setup. **"
 
-      - name: Verificar permisos y existencia de directorios (solo para depuración)
+      - name: Proceso de actualizacion de repositorio
         if: steps.test_ssh.outcome == 'success'
         run: |
           echo "** Verificando permisos y existencia de directorios... **"
